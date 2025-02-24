@@ -1,4 +1,5 @@
 const userRoutes ={
-  register :'/register'
+  register :'/register',
+  findData:'/findData'
 }
 export default userRoutes

@@ -22,7 +22,7 @@ const MultiStepForm = () => {
       email: registerInfo.email || "", // Mapping from registerInfo
       phone: registerInfo.mobile || "", // Mapping from registerInfo
       password: registerInfo.password || "",
-      confirmPassword:registerInfo.confirmPassword||"", // Mapping from registerInfo
+      confirmPassword: registerInfo.confirmPassword || "", // Mapping from registerInfo
       dob: personalInfo.dateOfBirth ? new Date(personalInfo.dateOfBirth) : new Date(), // Ensure valid Date
       name: personalInfo.fullName || "",
       currentAddress: personalInfo.currentAddress || "", // Prioritizing currentAddress if present
@@ -42,17 +42,30 @@ const MultiStepForm = () => {
 
       try {
         const structuredData = transformData(personalInfo, financialInfo, registerInfo);
-        console.log(structuredData);
-        
-        const response = await register(structuredData)
-        console.log("hey got response", response);
+        const response = await register(structuredData);
+        console.log("gottt",response?.data?.data?.user?.email);
+
+        if (response?.data?.data?.user?.email) {
+          const email = response.data.data.user.email;
+          const savedLink = `/saved-form/${email}`;
+
+          toast.success(
+            <span>
+              Registration Successful!{" "}
+              <a href={savedLink} className="text-blue-600 underline">
+                View your saved form
+              </a>
+            </span>
+          );
+        }
+        console.log("hey got response", response.data.data.user.email);
       } catch (err) {
-        console.log(err.response.data.message,"heyyyy");
-        if(err.response.data.message==="Invalid data"){
+        console.log(err.response.data.message, "heyyyy");
+        if (err.response.data.message === "Invalid data") {
           toast.error("Invalid Data");
-        }else if(err.response.data.message==="Email is already registered"){
+        } else if (err.response.data.message === "Email is already registered") {
           toast.error("Email is already registered")
-        }else if(err.response.data.message==="phone number is already taken"){
+        } else if (err.response.data.message === "phone number is already taken") {
           toast.error("phone number is already taken")
         }
       }
